@@ -1,0 +1,143 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:project.work:"
+msgid "No resource found for the employee \"%s\""
+msgstr "No s'ha trobat recurs per l'empleat \"%s\""
+
+msgctxt "field:project.resource.plan.start,confirm_bookings:"
+msgid "Confirm Bookings"
+msgstr "Confirma reserves"
+
+msgctxt "field:project.resource.plan.start,delete_drafts:"
+msgid "Delete drafts"
+msgstr "Elimina esborranys"
+
+msgctxt "field:project.resource.plan.start,domain:"
+msgid "Domain"
+msgstr "Domini"
+
+msgctxt "field:project.resource.plan.start,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:project.resource.plan.start,order:"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "field:project.resource.plan.start,view_search:"
+msgid "Search"
+msgstr "Cerca"
+
+msgctxt "field:project.resource.plan.tasks,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:project.resource.plan.tasks,tasks:"
+msgid "Tasks To Schedule"
+msgstr "Tasques a planificar"
+
+msgctxt "field:project.work,bookings:"
+msgid "Bookings"
+msgstr "Reserves"
+
+msgctxt "field:project.work,expected_end_date:"
+msgid "Expected End Date"
+msgstr "Data de finalització esperada"
+
+msgctxt "field:project.work,expected_end_date_project:"
+msgid "Expected End Date"
+msgstr "Data de finalització esperada"
+
+msgctxt "field:project.work,planned_end_date:"
+msgid "Planned End Date"
+msgstr "Data de finalització planificada"
+
+msgctxt "field:project.work,planned_end_date_project:"
+msgid "Planned End Date"
+msgstr "Data de finalització planificada"
+
+msgctxt "field:project.work,planned_start_date:"
+msgid "Planned Start Date"
+msgstr "Data d'inici planificada"
+
+msgctxt "field:project.work,planned_start_date_project:"
+msgid "Planned Start Date"
+msgstr "Data d'inici planificada"
+
+msgctxt "help:project.resource.plan.start,confirm_bookings:"
+msgid "If marked the generated bookings will be confirmed."
+msgstr "Si es marca, les reserves generades es marcaràn com a confirmades."
+
+msgctxt "help:project.resource.plan.start,delete_drafts:"
+msgid "If marked all the draft bookings will be deleted."
+msgstr "Si es marca, tots les reserves en esborrany s'eliminaràn."
+
+msgctxt "model:ir.action,name:act_project_allocation_tree"
+msgid "Task Allocation"
+msgstr "Assignació de tasques"
+
+msgctxt "model:ir.action,name:wizard_resource_plan"
+msgid "Resource Plan"
+msgstr "Planificar recursos"
+
+msgctxt "model:ir.ui.menu,name:menu_project_resource_plan"
+msgid "Resource Plan"
+msgstr "Planificar recursos"
+
+msgctxt "model:project.resource.plan.start,name:"
+msgid "Project Resource Plan Start"
+msgstr "Inici planificar recursos de projecte"
+
+msgctxt "model:project.resource.plan.tasks,name:"
+msgid "Project Resource Plan Tasks"
+msgstr "Tasques planificar recursos de projecte"
+
+msgctxt "model:res.group,name:group_project_resource_plan"
+msgid "Project Resource Plan"
+msgstr "Planificar recursos de projecte"
+
+msgctxt "view:project.allocation:"
+msgid "Allocation"
+msgstr "Assignació"
+
+msgctxt "view:project.allocation:"
+msgid "Allocations"
+msgstr "Assignacions"
+
+msgctxt "view:project.resource.plan.start:"
+msgid "Project Resource Plan Start"
+msgstr "Inici planificar recursos de projecte"
+
+msgctxt "view:project.resource.plan.tasks:"
+msgid "Project Resource Plan Tasks"
+msgstr "Tasques planificar recursos de projecte"
+
+msgctxt "view:project.work:"
+msgid "Allocations"
+msgstr "Assignacions"
+
+msgctxt "view:project.work:"
+msgid "Plan"
+msgstr "Planificació"
+
+msgctxt "view:project.work:"
+msgid "Task Allocation"
+msgstr "Assignació de tasques"
+
+msgctxt "wizard_button:project.resource.plan,start,end:"
+msgid "Cancel"
+msgstr "Cancel·lat"
+
+msgctxt "wizard_button:project.resource.plan,start,tasks:"
+msgid "Ok"
+msgstr "D'acord"
+
+msgctxt "wizard_button:project.resource.plan,tasks,plan:"
+msgid "Ok"
+msgstr "D'acord"
+
+msgctxt "wizard_button:project.resource.plan,tasks,start:"
+msgid "Back"
+msgstr "Enrera"

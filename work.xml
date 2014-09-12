@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tryton>
+    <data>
+
+        <record model="res.group" id="group_project_resource_plan">
+            <field name="name">Project Resource Plan</field>
+        </record>
+        <record model="res.user-res.group" id="user_admin_group_project_resource_plan">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="group_project_resource_plan"/>
+        </record>
+        <record model="res.user-res.group" id="user_trigger_group_project_resource_plan">
+            <field name="user" ref="res.user_trigger"/>
+            <field name="group" ref="group_project_resource_plan"/>
+        </record>
+        <record model="ir.ui.view" id="allocation_view_form">
+            <field name="model">project.allocation</field>
+            <field name="type">form</field>
+            <field name="name">allocation_form</field>
+        </record>
+        <record model="ir.ui.view" id="allocation_view_tree">
+            <field name="model">project.allocation</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="name">allocation_tree</field>
+        </record>
+        <record model="ir.ui.view" id="resource_plan_start_view_form">
+            <field name="model">project.resource.plan.start</field>
+            <field name="type">form</field>
+            <field name="name">project_resource_plan_start_form</field>
+        </record>
+        <record model="ir.ui.view" id="resource_plan_tasks_view_form">
+            <field name="model">project.resource.plan.tasks</field>
+            <field name="type">form</field>
+            <field name="name">project_resource_plan_tasks_form</field>
+        </record>
+        <record model="ir.ui.view" id="project_work_view_form">
+            <field name="model">project.work</field>
+            <field name="type">form</field>
+            <field name="inherit" ref="project.work_view_form"/>
+            <field name="name">project_work_form</field>
+        </record>
+        <record model="ir.ui.view" id="task_allocation_view_list">
+            <field name="model">project.work</field>
+            <field name="type">tree</field>
+            <field name="name">project_work_list</field>
+        </record>
+        <record model="ir.action.act_window" id="act_project_allocation_tree">
+            <field name="name">Task Allocation</field>
+            <field name="res_model">project.work</field>
+            <field name="domain">[('type', '=', 'task')]</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_project_allocation_tree_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="task_allocation_view_list"/>
+            <field name="act_window" ref="act_project_allocation_tree"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_project_allocation_tree_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="project.work_view_form"/>
+            <field name="act_window" ref="act_project_allocation_tree"/>
+        </record>
+        <record model="ir.action.wizard" id="wizard_resource_plan">
+            <field name="name">Resource Plan</field>
+            <field name="wiz_name">project.resource.plan</field>
+        </record>
+        <record model="ir.action.keyword" id="resource_plan_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">project.work,-1</field>
+            <field name="action" ref="wizard_resource_plan"/>
+        </record>
+        <!-- Menus -->
+        <menuitem id="menu_project_resource_plan" sequence="60"
+            action="wizard_resource_plan" parent="project.menu_project_tree"/>
+
+          <record model="ir.ui.menu-res.group" id="menu_project_resource_plan_group_project_resource_plan">
+            <field name="menu" ref="menu_project_resource_plan"/>
+            <field name="group" ref="group_project_resource_plan"/>
+          </record>
+
+    </data>
+</tryton>

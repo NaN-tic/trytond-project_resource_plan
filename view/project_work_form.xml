@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/notebook/page[@id='children']" position="after">
+        <page string="Plan" id="plan">
+            <label name="planned_start_date"/>
+            <field name="planned_start_date"/>
+            <label name="planned_end_date"/>
+            <field name="planned_end_date"/>
+            <label name="expected_end_date"/>
+            <field name="expected_end_date"/>
+            <newline/>
+            <label name="planned_start_date_project"/>
+            <field name="planned_start_date_project"/>
+            <label name="planned_end_date_project"/>
+            <field name="planned_end_date_project"/>
+            <label name="expected_end_date_project"/>
+            <field name="expected_end_date_project"/>
+            <newline/>
+            <field name="predecessors" colspan="2"/>
+            <field name="successors" colspan="2"/>
+        </page>
+        <page string="Allocations" id="allocations"
+            states="{'invisible': Not(Equal(Eval('type'), 'task'))}" >
+            <field name="allocations" colspan="4"/>
+            <field name="bookings" colspan="4"/>
+        </page>
+    </xpath>
+</data>

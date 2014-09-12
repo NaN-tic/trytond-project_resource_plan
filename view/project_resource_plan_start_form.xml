@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<form string="Project Resource Plan Start" col="2">
+    <label name="view_search"/>
+    <field name="view_search"/>
+    <label name="domain"/>
+    <field name="domain"/>
+    <label name="order"/>
+    <field name="order"/>
+    <label name="delete_drafts"/>
+    <field name="delete_drafts"/>
+    <label name="confirm_bookings"/>
+    <field name="confirm_bookings"/>
+</form>

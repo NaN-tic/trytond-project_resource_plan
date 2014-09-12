@@ -1,0 +1,143 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:project.work:"
+msgid "No resource found for the employee \"%s\""
+msgstr "No se ha encontrado ningún recurso para el empleado \"%s\"."
+
+msgctxt "field:project.resource.plan.start,confirm_bookings:"
+msgid "Confirm Bookings"
+msgstr "Confirmar reservas"
+
+msgctxt "field:project.resource.plan.start,delete_drafts:"
+msgid "Delete drafts"
+msgstr "Eliminar borradores"
+
+msgctxt "field:project.resource.plan.start,domain:"
+msgid "Domain"
+msgstr "Dominio"
+
+msgctxt "field:project.resource.plan.start,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:project.resource.plan.start,order:"
+msgid "Order"
+msgstr "Orden"
+
+msgctxt "field:project.resource.plan.start,view_search:"
+msgid "Search"
+msgstr "Buscar"
+
+msgctxt "field:project.resource.plan.tasks,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:project.resource.plan.tasks,tasks:"
+msgid "Tasks To Schedule"
+msgstr "Tareas a planificar"
+
+msgctxt "field:project.work,bookings:"
+msgid "Bookings"
+msgstr "Reservas"
+
+msgctxt "field:project.work,expected_end_date:"
+msgid "Expected End Date"
+msgstr "Fecha de finalización prevista"
+
+msgctxt "field:project.work,expected_end_date_project:"
+msgid "Expected End Date"
+msgstr "Fecha de finalización prevista"
+
+msgctxt "field:project.work,planned_end_date:"
+msgid "Planned End Date"
+msgstr "Fecha de finalización planificada"
+
+msgctxt "field:project.work,planned_end_date_project:"
+msgid "Planned End Date"
+msgstr "Fecha de finalización planificada"
+
+msgctxt "field:project.work,planned_start_date:"
+msgid "Planned Start Date"
+msgstr "Fecha de inicio planificada"
+
+msgctxt "field:project.work,planned_start_date_project:"
+msgid "Planned Start Date"
+msgstr "Fecha de inicio planificada"
+
+msgctxt "help:project.resource.plan.start,confirm_bookings:"
+msgid "If marked the generated bookings will be confirmed."
+msgstr "Si se marca las reservas generadas serán confirmadas."
+
+msgctxt "help:project.resource.plan.start,delete_drafts:"
+msgid "If marked all the draft bookings will be deleted."
+msgstr "Si se marca todas las reservas en borrador serán eliminadas."
+
+msgctxt "model:ir.action,name:act_project_allocation_tree"
+msgid "Task Allocation"
+msgstr "Assignación de tareas"
+
+msgctxt "model:ir.action,name:wizard_resource_plan"
+msgid "Resource Plan"
+msgstr "Planficar recursos"
+
+msgctxt "model:ir.ui.menu,name:menu_project_resource_plan"
+msgid "Resource Plan"
+msgstr "Planficar recursos"
+
+msgctxt "model:project.resource.plan.start,name:"
+msgid "Project Resource Plan Start"
+msgstr "Inicio planificador de recursos de proyecto"
+
+msgctxt "model:project.resource.plan.tasks,name:"
+msgid "Project Resource Plan Tasks"
+msgstr "Tareas planificador de recursos de proyecto"
+
+msgctxt "model:res.group,name:group_project_resource_plan"
+msgid "Project Resource Plan"
+msgstr "Planificador de recursos de proyecto"
+
+msgctxt "view:project.allocation:"
+msgid "Allocation"
+msgstr "Asignación"
+
+msgctxt "view:project.allocation:"
+msgid "Allocations"
+msgstr "Asignaciones"
+
+msgctxt "view:project.resource.plan.start:"
+msgid "Project Resource Plan Start"
+msgstr "Inicio planificador de recursos de proyecto"
+
+msgctxt "view:project.resource.plan.tasks:"
+msgid "Project Resource Plan Tasks"
+msgstr "Tareas planificador de recursos de proyecto"
+
+msgctxt "view:project.work:"
+msgid "Allocations"
+msgstr "Asignaciones"
+
+msgctxt "view:project.work:"
+msgid "Plan"
+msgstr "Planificación"
+
+msgctxt "view:project.work:"
+msgid "Task Allocation"
+msgstr "Assignación de tareas"
+
+msgctxt "wizard_button:project.resource.plan,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:project.resource.plan,start,tasks:"
+msgid "Ok"
+msgstr "Aceptar"
+
+msgctxt "wizard_button:project.resource.plan,tasks,plan:"
+msgid "Ok"
+msgstr "Aceptar"
+
+msgctxt "wizard_button:project.resource.plan,tasks,start:"
+msgid "Back"
+msgstr "Atras"
