@@ -27,4 +27,8 @@
             <field name="bookings" colspan="4"/>
         </page>
     </xpath>
+     <xpath expr="/form/field[@name='party']" position="after">
+        <label name="assigned_employee"/>
+        <field name="assigned_employee"/>
+    </xpath>
 </data>

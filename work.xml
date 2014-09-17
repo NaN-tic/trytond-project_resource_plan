@@ -45,6 +45,12 @@
             <field name="type">tree</field>
             <field name="name">project_work_list</field>
         </record>
+        <record model="ir.ui.view" id="work_view_list2">
+            <field name="model">project.work</field>
+            <field name="type">tree</field>
+            <field name="inherit" ref="project.work_view_list2"/>
+            <field name="name">work_list2</field>
+        </record>
         <record model="ir.action.act_window" id="act_project_allocation_tree">
             <field name="name">Task Allocation</field>
             <field name="res_model">project.work</field>
