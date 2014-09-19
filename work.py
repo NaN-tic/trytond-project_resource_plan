@@ -6,6 +6,7 @@ from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, PYSONDecoder, PYSONEncoder
 from trytond.wizard import Wizard, StateAction, StateView, Button
+from trytond.rpc import RPC
 
 __all__ = ['Work', 'Allocation', 'PredecessorSuccessor',
     'ProjectResourcePlanStart', 'ProjectResourcePlanTasks',
@@ -81,7 +82,6 @@ class Work:
     assigned_employee = fields.Function(fields.Many2One('company.employee',
             'Assigned'), 'get_assigned_employee',
         setter='set_assigned_employee', searcher='search_assigned_employee')
-
 
     @classmethod
     def __setup__(cls):
@@ -210,6 +210,15 @@ class PredecessorSuccessor(ModelSQL):
             ondelete='CASCADE', required=True, select=True)
     successor = fields.Many2One('project.work', 'Successor',
             ondelete='CASCADE', required=True, select=True)
+
+    @classmethod
+    def __setup__(cls):
+        super(PredecessorSuccessor, cls).__setup__()
+        cls.__rpc__.update({
+            'read': RPC(True),
+            'search': RPC(True),
+            'search_read': RPC(True),
+            })
 
 
 class Allocation(ModelSQL, ModelView):
