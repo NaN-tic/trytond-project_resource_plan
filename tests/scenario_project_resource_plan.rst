@@ -14,6 +14,15 @@ Imports::
     >>> from proteus import config, Model, Wizard
     >>> today = datetime.date.today()
     >>> now = datetime.datetime.now()
+    >>> def add_days_without_weekend(date, days):
+    ...     result = date + relativedelta(days=days)
+    ...     daygenerator = (date + datetime.timedelta(x + 1) for x in xrange(
+    ...         (result - date).days))
+    ...     add = sum(1 for day in daygenerator if day.weekday() > 4)
+    ...     result = result + relativedelta(days=add)
+    ...     while result.weekday() > 4:
+    ...         result += relativedelta(days=add)
+    ...     return result
 
 Create database::
 
@@ -186,7 +195,7 @@ Plan all the tasks::
     ...     today, datetime.time(9, 00))
     True
     >>> project.planned_end_date_project == datetime.datetime.combine(
-    ...     today + relativedelta(days=2), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
     True
     >>> task_1.reload()
     >>> task_1.planned_start_date == datetime.datetime.combine(
@@ -199,20 +208,20 @@ Plan all the tasks::
     2
     >>> task_2.reload()
     >>> task_2.planned_start_date == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(9, 00))
     True
     >>> task_2.planned_end_date_project == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(17, 00))
     True
     >>> booking, = task_2.bookings
     >>> booking.state
     u'draft'
     >>> task_3.reload()
     >>> task_3.planned_start_date == datetime.datetime.combine(
-    ...     today + relativedelta(days=2), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
     True
-    >>> task_3.planned_end_date_project == datetime.datetime.combine(
-    ...     today + relativedelta(days=2), datetime.time(17, 00))
+    >>> task_3.planned_end_date == datetime.datetime.combine(
+    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
     True
     >>> booking, = task_3.bookings
     >>> booking.state
@@ -222,9 +231,9 @@ Second employee doesn't have bookings for tomorrow::
 
     >>> Booking = Model.get('resource.booking')
     >>> tomorrow_start = datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(0, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(0, 00))
     >>> tomorrow_end = datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(23, 59))
+    ...     add_days_without_weekend(today,1), datetime.time(23, 59))
     >>> bookings = Booking.find([
     ...     ('resource.employee', '=', second_employee.id),
     ...     ('dtstart', '>=', tomorrow_start),
@@ -291,17 +300,17 @@ Plan two tasks in the same day::
     >>> plan.execute('plan')
     >>> task_4.reload()
     >>> task_4.planned_start_date == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(9, 00))
     True
     >>> task_4.planned_end_date_project == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(13, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(13, 00))
     True
     >>> task_5.reload()
     >>> task_5.planned_start_date == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(13, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(13, 00))
     True
     >>> task_5.planned_end_date_project == datetime.datetime.combine(
-    ...     today + relativedelta(days=1), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,1), datetime.time(17, 00))
     True
 
 Open the plan wizard with a domain::

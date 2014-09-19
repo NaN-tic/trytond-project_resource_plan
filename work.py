@@ -117,6 +117,9 @@ class Work:
                     planned_start = max(planned_start, task.planned_end_date)
             if planned_start and planned_start.time() >= task.company.day_ends:
                 tomorrow = planned_start + relativedelta(days=1)
+                #Skip saturdays and sundays
+                while tomorrow.weekday() > 4:
+                    tomorrow += relativedelta(days=1)
                 planned_start = datetime.datetime.combine(tomorrow,
                     task.company.day_starts)
             if not work.allocations or not work.effort:
