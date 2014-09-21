@@ -8,6 +8,8 @@
     <field name="domain"/>
     <label name="order"/>
     <field name="order"/>
+    <label name="planning_days"/>
+    <field name="planning_days"/>
     <label name="delete_drafts"/>
     <field name="delete_drafts"/>
     <label name="confirm_bookings"/>

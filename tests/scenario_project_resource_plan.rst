@@ -313,6 +313,33 @@ Plan two tasks in the same day::
     ...     add_days_without_weekend(today,1), datetime.time(17, 00))
     True
 
+Plan an unassigned task and check it gets assigned to a employee and planned::
+
+    >>> work = TimesheetWork()
+    >>> work.name = 'Task 6'
+    >>> work.save()
+    >>> task = project.children.new()
+    >>> task.work = work
+    >>> task.type = 'task'
+    >>> task.effort = 8
+    >>> project.save()
+    >>> _, _, _, _, _, task_6 = project.children
+    >>> plan = Wizard('project.resource.plan')
+    >>> plan.form.domain = ''
+    >>> plan.form.order = ''
+    >>> plan.form.confirm_bookings = True
+    >>> plan.execute('tasks')
+    >>> plan.execute('plan')
+    >>> task_6.reload()
+    >>> task_6.assigned_employee == employee
+    True
+    >>> task_6.planned_start_date == datetime.datetime.combine(
+    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
+    True
+    >>> task_6.planned_end_date_project == datetime.datetime.combine(
+    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
+    True
+
 Open the plan wizard with a domain::
 
     >>> plan = Wizard('project.resource.plan')

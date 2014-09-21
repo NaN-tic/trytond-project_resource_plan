@@ -24,7 +24,7 @@ class Work:
             ('id', '!=', Eval('id')),
             ],
         states={
-            'invisible': Eval('type') != 'task',
+            'invisible': Eval('type') == 'project',
             }, depends=['type', 'id'])
     successors = fields.Many2Many('project.predecessor_successor',
         'predecessor', 'successor', 'Successors',
@@ -32,11 +32,11 @@ class Work:
             ('id', '!=', Eval('id')),
             ],
         states={
-            'invisible': Eval('type') != 'task',
+            'invisible': Eval('type') == 'project',
             }, depends=['type', 'id'])
     allocations = fields.One2Many('project.allocation', 'work', 'Allocations',
         states={
-            'invisible': Eval('type') != 'task',
+            'invisible': Eval('type') == 'project',
             }, depends=['type'])
     bookings = fields.One2Many('resource.booking', 'document', 'Bookings',
         states={
@@ -44,7 +44,7 @@ class Work:
             }, depends=['type'])
     expected_end_date = fields.DateTime('Expected End Date',
         states={
-            'invisible': Eval('type') != 'task',
+            'invisible': Eval('type') == 'project',
         },
         depends=['type'])
     planned_start_date = fields.DateTime('Planned Start Date',
@@ -60,21 +60,21 @@ class Work:
     planned_start_date_project = fields.Function(fields.DateTime(
             'Planned Start Date',
             states={
-                'invisible': Eval('type') != 'project',
+                'invisible': Eval('type') == 'task',
             },
             depends=['type']),
         'get_project_dates')
     planned_end_date_project = fields.Function(fields.DateTime(
             'Planned End Date',
             states={
-                'invisible': Eval('type') != 'project',
+                'invisible': Eval('type') == 'task',
             },
             depends=['type']),
         'get_project_dates')
     expected_end_date_project = fields.Function(fields.DateTime(
             'Expected End Date',
             states={
-                'invisible': Eval('type') != 'project',
+                'invisible': Eval('type') == 'task',
             },
             depends=['type']),
         'get_project_dates', setter='set_expected_end_date_project')
@@ -96,20 +96,13 @@ class Work:
 
     @classmethod
     @ModelView.button
-    def schedule(cls, works, done_works=None):
+    def schedule(cls, works, planning_days, done_works=None):
         pool = Pool()
         Resource = pool.get('resource.resource')
         today = datetime.datetime.now()
-        if done_works is None:
-            done_works = set()
-        for work in works:
-            if work.id in done_works or work.scheduled:
-                continue
+
+        def get_planned_start(predecessors):
             planned_start = None
-            planned_end = None
-            predecessors = list(work.predecessors)
-            if predecessors:
-                cls.schedule(predecessors, done_works)
             for task in predecessors:
                 if not planned_start:
                     planned_start = task.planned_end_date
@@ -122,9 +115,25 @@ class Work:
                     tomorrow += relativedelta(days=1)
                 planned_start = datetime.datetime.combine(tomorrow,
                     task.company.day_starts)
-            if not work.allocations or not work.effort:
+            return planned_start
+
+        if done_works is None:
+            done_works = set()
+        to_allocate = []
+        for work in works:
+            if work.id in done_works or work.scheduled:
+                continue
+            planned_end = None
+            predecessors = list(work.predecessors)
+            if predecessors:
+                cls.schedule(predecessors, planning_days, done_works)
+            if not work.allocations:
+                to_allocate.append(work)
+                continue
+            if not work.effort:
                 continue
 
+            planned_start = get_planned_start(predecessors)
             start = planned_start or today
 
             for allocation in work.allocations:
@@ -136,11 +145,10 @@ class Work:
                     cls.raise_user_error('no_resource_found',
                         allocation.employee.rec_name)
                 resource, = resources
-                bookings = resource.book_hours(start, effort)
+                bookings = resource.book_hours(start, effort, planning_days)
                 s, e = resource.book_interval(bookings)
-                if planned_start and planned_start.date() == s.date():
-                    #Book interval give us more information about time
-                    planned_start = s
+                if not s:
+                    continue
                 planned_start = planned_start and min(planned_start, s) or s
                 planned_end = planned_end and max(planned_end, e) or e
                 resource.book(bookings, 'project.work,%s' % work.id)
@@ -149,6 +157,22 @@ class Work:
             work.planned_start_date = planned_start
             work.save()
             done_works.add(work.id)
+
+        for work in to_allocate:
+            start = get_planned_start(list(work.predecessors)) or today
+            # Find the employee that can start first the task
+
+            resource = Resource.get_free_resource(start, work.effort,
+                domain=work.get_free_resource_domain())
+            if not resource:
+                continue
+            work.assigned_employee = resource.employee
+            work.save()
+            #Reschedule here as scheduling affects finding resources
+            cls.schedule([work], planning_days, done_works)
+
+    def get_free_resource_domain(self):
+        return [('employee', '!=', None)]
 
     @classmethod
     def get_project_dates(cls, works, names):
@@ -193,6 +217,7 @@ class Work:
                 to_create.append({
                         'employee': value,
                         'work': work.id,
+                        'percentage': 100.0,
                         })
             Allocation.create(to_create)
 
@@ -243,6 +268,7 @@ class ProjectResourcePlanStart(ModelView):
             ])
     domain = fields.Char('Domain')
     order = fields.Char('Order')
+    planning_days = fields.Integer('Planning Days')
     delete_drafts = fields.Boolean('Delete drafts', help='If marked all the '
         'draft bookings will be deleted.')
     confirm_bookings = fields.Boolean('Confirm Bookings', help='If marked the '
@@ -251,6 +277,10 @@ class ProjectResourcePlanStart(ModelView):
     @staticmethod
     def default_delete_drafts():
         return True
+
+    @staticmethod
+    def default_planning_days():
+        return 90
 
     @fields.depends('view_search')
     def on_change_with_domain(self):
@@ -312,18 +342,28 @@ class ProjectResourcePlan(Wizard):
     def do_plan(self, action):
         pool = Pool()
         Work = pool.get('project.work')
+        Allocation = pool.get('project.allocation')
         Booking = pool.get('resource.booking')
 
         if self.start.delete_drafts:
             to_delete = Booking.search([
                     ('state', '=', 'draft'),
                     ])
+
+            allocations = []
+            for b in to_delete:
+                allocations += [x for x in b.document.allocations if x]
+
+            if allocations:
+                Allocation.delete(allocations)
+
             if to_delete:
                 Booking.cancel(to_delete)
                 Booking.delete(to_delete)
 
         tasks = list(self.tasks.tasks)
-        Work.schedule(tasks)
+        planning_days = relativedelta(days=self.start.planning_days)
+        Work.schedule(tasks, planning_days)
         if self.start.confirm_bookings:
             to_confirm = []
             for task in tasks:
