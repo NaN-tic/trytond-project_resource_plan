@@ -8,7 +8,7 @@ from trytond.pyson import Eval, PYSONDecoder, PYSONEncoder
 from trytond.wizard import Wizard, StateAction, StateView, Button
 from trytond.rpc import RPC
 
-__all__ = ['Work', 'Allocation', 'PredecessorSuccessor',
+__all__ = ['Work', 'PredecessorSuccessor',
     'ProjectResourcePlanStart', 'ProjectResourcePlanTasks',
     'ProjectResourcePlan']
 
@@ -200,8 +200,8 @@ class Work:
                 })
 
     def get_assigned_employee(self, name):
-        if self.allocations:
-            return self.allocations[0].employee.id
+        if self.assigned_employee:
+            return self.assigned_employee
 
     @classmethod
     def set_assigned_employee(cls, works, name, value):
@@ -241,19 +241,6 @@ class PredecessorSuccessor(ModelSQL):
             'search': RPC(True),
             'search_read': RPC(True),
             })
-
-
-class Allocation(ModelSQL, ModelView):
-    'Allocation'
-    __name__ = 'project.allocation'
-    _rec_name = 'employee'
-    employee = fields.Many2One('company.employee', 'Employee', required=True,
-            select=True, ondelete='CASCADE')
-    work = fields.Many2One('project.work', 'Work', required=True,
-            select=True, ondelete='CASCADE')
-    percentage = fields.Float('Percentage', digits=(16, 2), required=True,
-        domain=[('percentage', '>', 0.0)])
-
 
 class ProjectResourcePlanStart(ModelView):
     'Project Resource Plan Start'
@@ -339,7 +326,6 @@ class ProjectResourcePlan(Wizard):
     def do_plan(self, action):
         pool = Pool()
         Work = pool.get('project.work')
-        Allocation = pool.get('project.allocation')
         Booking = pool.get('resource.booking')
 
         if self.start.delete_drafts:

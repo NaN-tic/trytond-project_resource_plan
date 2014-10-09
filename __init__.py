@@ -11,7 +11,6 @@ def register():
         ProjectResourcePlanStart,
         ProjectResourcePlanTasks,
         PredecessorSuccessor,
-        Allocation,
         ResourceBooking,
         module='project_resource_plan', type_='model')
     Pool.register(

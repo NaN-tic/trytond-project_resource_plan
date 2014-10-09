@@ -13,17 +13,7 @@
             <field name="user" ref="res.user_trigger"/>
             <field name="group" ref="group_project_resource_plan"/>
         </record>
-        <record model="ir.ui.view" id="allocation_view_form">
-            <field name="model">project.allocation</field>
-            <field name="type">form</field>
-            <field name="name">allocation_form</field>
-        </record>
-        <record model="ir.ui.view" id="allocation_view_tree">
-            <field name="model">project.allocation</field>
-            <field name="type">tree</field>
-            <field name="priority" eval="8"/>
-            <field name="name">allocation_tree</field>
-        </record>
+
         <record model="ir.ui.view" id="resource_plan_start_view_form">
             <field name="model">project.resource.plan.start</field>
             <field name="type">form</field>

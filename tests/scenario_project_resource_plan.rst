@@ -161,22 +161,13 @@ Create a Project::
 Create allocations and set predecessors and successors::
 
     >>> task_1 = ProjectWork(task_1.id)
-    >>> allocation = task_1.allocations.new()
-    >>> allocation.employee = employee
-    >>> allocation.percentage = 50.0
-    >>> allocation = task_1.allocations.new()
-    >>> allocation.employee = second_employee
-    >>> allocation.percentage = 50.0
+    >>> task_1.assigned_employee = employee
     >>> task_1.save()
-    >>> allocation = task_2.allocations.new()
-    >>> allocation.employee = employee
-    >>> allocation.percentage = 100.0
+    >>> task_2.assigned_employee = employee
     >>> task_1 = ProjectWork(task_1.id)
     >>> task_2.predecessors.append(task_1)
     >>> task_2.save()
-    >>> allocation = task_3.allocations.new()
-    >>> allocation.employee = second_employee
-    >>> allocation.percentage = 100.0
+    >>> task_3.assigned_employee = second_employee
     >>> task_2 = ProjectWork(task_2.id)
     >>> task_3.predecessors.append(task_2)
     >>> task_3.save()
@@ -195,7 +186,7 @@ Plan all the tasks::
     ...     today, datetime.time(9, 00))
     True
     >>> project.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,0), datetime.time(17, 00))
     True
     >>> task_1.reload()
     >>> task_1.planned_start_date == datetime.datetime.combine(
@@ -280,15 +271,11 @@ Plan two tasks in the same day::
     >>> task.effort = 4
     >>> project.save()
     >>> _, _, _, task_4, task_5 = project.children
-    >>> allocation = task_4.allocations.new()
-    >>> allocation.employee = second_employee
-    >>> allocation.percentage = 100.0
+    >>> task_4.assigned_employee = second_employee
     >>> task_1 = ProjectWork(task_1.id)
     >>> task_4.predecessors.append(task_1)
     >>> task_4.save()
-    >>> allocation = task_5.allocations.new()
-    >>> allocation.employee = second_employee
-    >>> allocation.percentage = 100.0
+    >>> task_5.assigned_employee = second_employee
     >>> task_1 = ProjectWork(task_1.id)
     >>> task_5.predecessors.append(task_1)
     >>> task_5.save()

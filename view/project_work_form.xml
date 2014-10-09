@@ -23,7 +23,8 @@
         </page>
         <page string="Allocations" id="allocations"
             states="{'invisible': Not(Equal(Eval('type'), 'task'))}" >
-            <field name="allocations" colspan="4"/>
+            <label name="planned_employee"/>
+            <field name="planned_employee"/>
             <field name="bookings" colspan="4"/>
         </page>
     </xpath>
