@@ -34,10 +34,6 @@ class Work:
         states={
             'invisible': Eval('type') == 'project',
             }, depends=['type', 'id'])
-    allocations = fields.One2Many('project.allocation', 'work', 'Allocations',
-        states={
-            'invisible': Eval('type') == 'project',
-            }, depends=['type'])
     bookings = fields.One2Many('resource.booking', 'document', 'Bookings',
         states={
             'invisible': Eval('type') != 'task',
@@ -79,15 +75,19 @@ class Work:
             depends=['type']),
         'get_project_dates', setter='set_expected_end_date_project')
 
-    assigned_employee = fields.Function(fields.Many2One('company.employee',
-            'Assigned'), 'get_assigned_employee',
-        setter='set_assigned_employee', searcher='search_assigned_employee')
+    planned_employee = fields.Many2One('company.employee', 'Planned')
+    assigned_employee = fields.Many2One('company.employee','Assigned')
 
     @classmethod
     def __setup__(cls):
         super(Work, cls).__setup__()
         cls._error_messages.update({
                 'no_resource_found': 'No resource found for the employee "%s"',
+                })
+        cls._buttons.update({
+                'schedule': {
+                    'invisible': (Eval('type') != 'task')
+                    },
                 })
 
     @property
@@ -96,10 +96,11 @@ class Work:
 
     @classmethod
     @ModelView.button
-    def schedule(cls, works, planning_days, done_works=None):
+    def schedule(cls, works, planning_days=None, done_works=None):
         pool = Pool()
         Resource = pool.get('resource.resource')
         today = datetime.datetime.now()
+        Booking = pool.get('resource.booking')
 
         def get_planned_start(predecessors):
             planned_start = None
@@ -123,53 +124,49 @@ class Work:
         for work in works:
             if work.id in done_works or work.scheduled:
                 continue
+
+            Booking.delete(work.bookings)
             planned_end = None
             predecessors = list(work.predecessors)
+            resource = None
             if predecessors:
                 cls.schedule(predecessors, planning_days, done_works)
-            if not work.allocations:
-                to_allocate.append(work)
-                continue
+            if not work.assigned_employee:
+                start = get_planned_start(list(work.predecessors)) or today
+                # Find the employee that can start first the task
+                resource = Resource.get_free_resource(start, work.effort,
+                    domain=work.get_free_resource_domain())
+                if not resource:
+                    continue
             if not work.effort:
                 continue
 
             planned_start = get_planned_start(predecessors)
             start = planned_start or today
 
-            for allocation in work.allocations:
-                effort = work.effort * (allocation.percentage / 100)
+            effort = work.effort
+            if not resource:
                 resources = Resource.search([
-                        ('employee', '=', allocation.employee.id),
+                        ('employee', '=', work.assigned_employee.id),
                         ], limit=1)
                 if not resources:
                     cls.raise_user_error('no_resource_found',
-                        allocation.employee.rec_name)
+                        assigned_employee.rec_name)
                 resource, = resources
-                bookings = resource.book_hours(start, effort, planning_days)
-                s, e = resource.book_interval(bookings)
-                if not s:
-                    continue
-                planned_start = planned_start and min(planned_start, s) or s
-                planned_end = planned_end and max(planned_end, e) or e
-                resource.book(bookings, 'project.work,%s' % work.id)
+            bookings = resource.book_hours(start, effort, planning_days)
+            s, e = resource.book_interval(bookings)
+            if not s:
+                continue
+            planned_start = planned_start and min(planned_start, s) or s
+            planned_end = planned_end and max(planned_end, e) or e
+            resource.book(bookings, 'project.work,%s' % work.id)
 
             work.planned_end_date = planned_end
             work.planned_start_date = planned_start
+            work.planned_employee = resource.employee.id
             work.save()
             done_works.add(work.id)
 
-        for work in to_allocate:
-            start = get_planned_start(list(work.predecessors)) or today
-            # Find the employee that can start first the task
-
-            resource = Resource.get_free_resource(start, work.effort,
-                domain=work.get_free_resource_domain())
-            if not resource:
-                continue
-            work.assigned_employee = resource.employee
-            work.save()
-            #Reschedule here as scheduling affects finding resources
-            cls.schedule([work], planning_days, done_works)
 
     def get_free_resource_domain(self):
         return [('employee', '!=', None)]
@@ -349,13 +346,6 @@ class ProjectResourcePlan(Wizard):
             to_delete = Booking.search([
                     ('state', '=', 'draft'),
                     ])
-
-            allocations = []
-            for b in to_delete:
-                allocations += [x for x in b.document.allocations if x]
-
-            if allocations:
-                Allocation.delete(allocations)
 
             if to_delete:
                 Booking.cancel(to_delete)
