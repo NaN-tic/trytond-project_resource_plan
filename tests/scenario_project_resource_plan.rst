@@ -186,33 +186,33 @@ Plan all the tasks::
     ...     today, datetime.time(9, 00))
     True
     >>> project.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,0), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,3), datetime.time(17, 00))
     True
     >>> task_1.reload()
     >>> task_1.planned_start_date == datetime.datetime.combine(
     ...     today, datetime.time(9, 00))
     True
-    >>> task_1.planned_end_date_project == datetime.datetime.combine(
-    ...     today, datetime.time(17, 00))
+    >>> task_1.planned_end_date == datetime.datetime.combine(
+    ...     add_days_without_weekend(today,1), datetime.time(17, 00))
     True
     >>> len(task_1.bookings)
     2
     >>> task_2.reload()
     >>> task_2.planned_start_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
     True
     >>> task_2.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
     True
     >>> booking, = task_2.bookings
     >>> booking.state
     u'draft'
     >>> task_3.reload()
     >>> task_3.planned_start_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,3), datetime.time(9, 00))
     True
     >>> task_3.planned_end_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
+    ...     add_days_without_weekend(today,3), datetime.time(17, 00))
     True
     >>> booking, = task_3.bookings
     >>> booking.state
@@ -232,24 +232,6 @@ Second employee doesn't have bookings for tomorrow::
     ...     ])
     >>> len(bookings)
     0
-
-Cancel a booking and check it gets recreated::
-
-    >>> booking, = task_3.bookings
-    >>> booking.click('cancel')
-    >>> plan = Wizard('project.resource.plan')
-    >>> plan.form.domain = ''
-    >>> plan.form.order = ''
-    >>> plan.form.confirm_bookings = True
-    >>> plan.execute('tasks')
-    >>> plan.form.tasks == [task_1, task_2, task_3]
-    True
-    >>> plan.execute('plan')
-    >>> task_3.reload()
-    >>> len(task_3.bookings)
-    2
-    >>> sorted([b.state for b in task_3.bookings])
-    [u'canceled', u'confirmed']
 
 
 Plan two tasks in the same day::
@@ -287,17 +269,17 @@ Plan two tasks in the same day::
     >>> plan.execute('plan')
     >>> task_4.reload()
     >>> task_4.planned_start_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(9, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
     True
     >>> task_4.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(13, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(13, 00))
     True
     >>> task_5.reload()
     >>> task_5.planned_start_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(13, 00))
+    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
     True
-    >>> task_5.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,1), datetime.time(17, 00))
+    >>> task_5.planned_end_date == datetime.datetime.combine(
+    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
     True
 
 Plan an unassigned task and check it gets assigned to a employee and planned::
@@ -318,13 +300,13 @@ Plan an unassigned task and check it gets assigned to a employee and planned::
     >>> plan.execute('tasks')
     >>> plan.execute('plan')
     >>> task_6.reload()
-    >>> task_6.assigned_employee == employee
+    >>> task_6.assigned_employee == second_employee
     True
     >>> task_6.planned_start_date == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,2), datetime.time(9, 00))
+    ...     today, datetime.time(9, 00))
     True
-    >>> task_6.planned_end_date_project == datetime.datetime.combine(
-    ...     add_days_without_weekend(today,2), datetime.time(17, 00))
+    >>> task_6.planned_end_date == datetime.datetime.combine(
+    ...     today, datetime.time(17, 00))
     True
 
 Open the plan wizard with a domain::
